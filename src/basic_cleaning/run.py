@@ -29,6 +29,9 @@ def go(args):
     # Convert last_review to datetime
     df['last_review'] = pd.to_datetime(df['last_review'])
 
+    idx = df['longitude'].between(args.min_longitude, args.min_longitude) & df['latitude'].between(args.min_latitude, args.max_latitude)
+    df = df[idx].copy()
+
     df.to_csv(args.output_artifact, index=False)
 
     artifact = wandb.Artifact(
@@ -89,6 +92,34 @@ if __name__ == "__main__":
         "--max_price", 
         type=float,
         help="maximum price to consider",
+        required=True
+    )
+
+    parser.add_argument(
+        "--min_longitude", 
+        type=float,
+        help="minimum longitude to consider",
+        required=True
+    )
+
+    parser.add_argument(
+        "--max_longitude", 
+        type=float,
+        help="maximum longitude to consider",
+        required=True
+    )
+
+    parser.add_argument(
+        "--min_latitude", 
+        type=float,
+        help="minimum latitude to consider",
+        required=True
+    )
+
+    parser.add_argument(
+        "--max_latitude", 
+        type=float,
+        help="maximum latitude to consider",
         required=True
     )
 
